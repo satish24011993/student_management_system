@@ -141,6 +141,6 @@ AUTHENTICATION_BACKENDS = ['student_management_app.EmailBackEnd.EmailBackEnd']
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'satishkurakula073@gmail.com'
-EMAIL_HOST_PASSWORD = 'Godo~expect'
+EMAIL_HOST_PASSWORD = '*********'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = "Student management System <satishkurakula073@gmail.com>"
