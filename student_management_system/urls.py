@@ -23,6 +23,7 @@ from student_management_app import views, HodViews,StaffViews,StudentViews
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('demo/', views.showDemoPage, name = 'demo'),
+    path('account/',include('django.contrib.auth.urls')),
     path('',views.ShowLoginPage,name='show_login'),
     path('get_user_details/', views.GetUserDetails),
     path('doLogin', views.doLogin, name='do_login'),
@@ -53,9 +54,19 @@ urlpatterns = [
     #     Staff URL Path
     path('staff_home/',StaffViews.staff_home, name="staff_home"),
     path('staff_take_attendance/',StaffViews.staff_take_attendance, name="staff_take_attendance"),
+    path('staff_update_attendance/', StaffViews.staff_update_attendance, name="staff_update_attendance"),
     path('get_students/', StaffViews.get_students, name="get_students"),
-    path('student_home/',StudentViews.student_home, name="student_home"),
+    path('get_attendance_dates/', StaffViews.get_attendance_dates, name="get_attendance_dates"),
+    path('get_attendance_student/', StaffViews.get_attendance_student, name="get_attendance_student"),
     path('save_attendance_data',StaffViews.save_attendance_data,name='save_attendance_data'),
+    path('staff_apply_leave/',StaffViews.staff_apply_leave,name='staff_apply_leave'),
+    path('staff_apply_leave_save',StaffViews.staff_apply_leave_save,name='staff_apply_leave_save'),
+    path('save_updateattendance_data/',StaffViews.save_updateattendance_data,name='save_updateattendance_data'),
+    path('staff_feedback/',StaffViews.staff_feedback,name='staff_feedback'),
+    path('staff_feedback_save/',StaffViews.staff_feedback_save,name='staff_feedback_save'),
+    # Student UURL Path
+    path('student_home/', StudentViews.student_home, name="student_home"),
+    path('student_view_attendance',StudentViews.student_view_attendance,name='student_view_attendance'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

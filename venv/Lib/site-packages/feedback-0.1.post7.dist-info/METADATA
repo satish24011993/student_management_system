@@ -1,0 +1,25 @@
+Metadata-Version: 2.0
+Name: feedback
+Version: 0.1.post7
+Summary: Feedback and user input manager
+Home-page: http://github.com/djtaylor/python-feedback
+Author: David Taylor
+Author-email: djtaylor13@gmail.com
+License: GPLv3
+Keywords: feedback terminal shell ui output input
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Environment :: Console
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Natural Language :: English
+Classifier: Operating System :: POSIX
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development :: User Interfaces
+Classifier: Topic :: Terminals
+Requires-Dist: colorama (>=0.2.5)
+Requires-Dist: termcolor (>=1.1.0)
+
+# Feedback Manager
+
+A simple Python module used to display different categories of messages on the command line, as well as capturing user input.
+
