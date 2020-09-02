@@ -141,14 +141,14 @@ AUTHENTICATION_BACKENDS = ['student_management_app.EmailBackEnd.EmailBackEnd']
 # EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 # EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_mails")
 
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'satishkurakula073@gmail.com'
-EMAIL_HOST_PASSWORD = '*********'
-EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = "Student management System <satishkurakula073@gmail.com>"
+# EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'satishkurakula073@gmail.com'
+# EMAIL_HOST_PASSWORD = '*********'
+# EMAIL_USE_TLS = True
+# DEFAULT_FROM_EMAIL = "Student management System <satishkurakula073@gmail.com>"
 
-STATICFILES_STORAGE='whitenoise.django.GzipManifestStaticFilesStorage'
+STATICFILES_STORAGE='whitenoise.django.CompressedManifestStaticFilesStorage'
 import dj_database_url
 prod_db = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(prod_db)
