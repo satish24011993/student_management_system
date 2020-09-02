@@ -213,9 +213,9 @@ def staff_profile_save(request):
             if password != None and password != "":
                 customuser.set_password(password)
             customuser.save()
-            messages.success(request, "Successfully Updated Profile")
+            messages.success(request, "Successfully Updated Procfile")
             return HttpResponseRedirect(reverse('staff_profile'))
         except:
-            messages.error(request, "Failed To Update Profile")
+            messages.error(request, "Failed To Update Procfile")
             return HttpResponseRedirect(reverse('staff_profile'))
 
