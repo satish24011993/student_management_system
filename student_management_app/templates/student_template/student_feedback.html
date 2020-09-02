@@ -1,14 +1,9 @@
-{% extends 'staff_template/base_template.html' %}
+{% extends 'student_template/base_template.html' %}
 {% load static %}
 {% block page_title %}
 Feedback Message
 {% endblock page_title %}
 {% block main_content %}
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <section class="content">
   <div class="container-fluid">
               <div class="row">
@@ -20,7 +15,7 @@ Feedback Message
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form action="{% url 'staff_feedback_save' %}" method="post">
+              <form action="{% url 'student_feedback_save' %}" method="post">
                 <div class="card-body">
                   <div class="form-group">
                       {% csrf_token %}

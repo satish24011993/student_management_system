@@ -1,8 +1,8 @@
-{% extends 'staff_template/base_template.html' %}
-{% load static %}
+{% extends 'hod_template/base_template.html' %}
 {% block page_title %}
-Feedback Message
+Edit Profile
 {% endblock page_title %}
+{% load static %}
 {% block main_content %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
@@ -11,23 +11,41 @@ Feedback Message
 
 <section class="content">
   <div class="container-fluid">
-              <div class="row">
+      <div class="row">
         <div class="col-md-12">
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Leave a Feedback Message</h3>
+                <h3 class="card-title">Edit Profile</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form action="{% url 'staff_feedback_save' %}" method="post">
+              <form role="form" action="{% url 'staff_profile_save' %}" method="post">
+                    {% csrf_token %}
                 <div class="card-body">
                   <div class="form-group">
-                      {% csrf_token %}
+                    <label>Username</label>
+                    <input type="text" class="form-control" name="username" value="{{ user.username }}" disabled="disabled">
                   </div>
                   <div class="form-group">
-                    <label>Feedback Message</label>
-                      <textarea class="form-control" rows="6" name="feedback_message"></textarea>
+                    <label>Email</label>
+                    <input type="email" class="form-control" name="email" value="{{ user.email }}" disabled="disabled">
+                  </div>
+                  <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}">
+                  </div>
+                  <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}">
+                  </div>
+                  <div class="form-group">
+                    <label>Address</label>
+                    <input type="text" class="form-control" name="address" value="{{ staff.address }}">
+                  </div>
+                  <div class="form-group">
+                    <label>Change Password</label>
+                    <input type="password" class="form-control" name="password" placeholder="Fill Only If You Want To Change Password">
                   </div>
                   <div class="form-group">
                     {% if messages %}
@@ -41,40 +59,17 @@ Feedback Message
                         {% endfor %}
                     {% endif %}
                   </div>
-
-
                 </div>
                 <!-- /.card-body -->
+
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary btn-block" id="fetch_student">Submit Feedback</button>
+                  <button type="submit" class="btn btn-primary btn-block">Save Profile</button>
                 </div>
               </form>
             </div>
             <!-- /.card -->
-             <div class="card card-primary">
-              <div class="card-header">
-                <h3 class="card-title">Feedback History</h3>
-              </div>
-
-                 <div class="table">
-                <table class="table">
-                     <tr>
-                        <th>ID</th>
-                        <th>Feedback Message</th>
-                        <th>Feedback Reply</th>
-                    </tr>
-                    {% for row in feedback_data %}
-                        <tr>
-                            <td>{{ row.id }}</td>
-                            <td>{{ row.feedback }}</td>
-                            <td>{{ row.feedback_reply }}</td>
-                        </tr>
-                    {% endfor %}
-                </table>
-                 </div>
-                </div>
-                </div>
-        </div>
+          </div>
+      </div>
   </div>
 </section>
 {% endblock main_content %}

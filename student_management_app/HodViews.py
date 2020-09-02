@@ -1,6 +1,10 @@
 from django.shortcuts import render, HttpResponse
-from django.http import HttpResponse,HttpResponseRedirect
-from student_management_app.models import CustomUser, Staff, Courses, Students, Subject, SessionYearModel
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+from student_management_app.models import CustomUser, Staff, Courses, Students, Subject, SessionYearModel, \
+    FeedBackStudent, FeedBackStaff, LeaveReportStudent, LeaveReportStaff, Attendance, AttendanceReport
 from django.contrib import messages
 from django.utils.timezone import datetime
 from django.shortcuts import get_object_or_404
@@ -9,7 +13,56 @@ from .forms import AddStudentForm,EditStudentForm
 from django.urls import reverse
 
 def admin_home(request):
-    return render(request, "hod_template/home_content.html")
+    student_count = Students.objects.all().count()
+    staff_count = Staff.objects.all().count()
+    subject_count = Subject.objects.all().count()
+    course_count = Courses.objects.all().count()
+    course_all = Courses.objects.all()
+    course_name_list=[]
+    subject_count_list = []
+    student_count_list_in_course = []
+    for course in course_all:
+        subjects = Subject.objects.filter(course_id = course.id).count()
+        students=Students.objects.filter(course_id=course.id).count()
+        course_name_list.append(course.course_name)
+        subject_count_list.append(subjects)
+        student_count_list_in_course.append(students)
+    student_count_list_in_subject = []
+    subject_list = []
+    subject_all = Subject.objects.all()
+    for subject in subject_all:
+        course = Courses.objects.get(id = subject.course_id.id)
+        student_count = Students.objects.filter(course_id = course.id).count()
+        subject_list.append(subject.subject_name)
+        student_count_list_in_subject.append(student_count)
+    attendance_present_list_staff = []
+    attendance_absent_list_staff = []
+    staff_name_list = []
+    staffs = Staff.objects.all()
+    for staff in staffs:
+        subject_ids = Subject.objects.filter(staff_id = staff.admin.id)
+        attendance = Attendance.objects.filter(subject_id__in = subject_ids).count()
+        leaves = LeaveReportStaff.objects.filter(staff_id = staff.id,leave_status = 1).count()
+        attendance_present_list_staff.append(attendance)
+        attendance_absent_list_staff.append(leaves)
+        staff_name_list.append(staff.admin.username)
+    attendance_present_list_student = []
+    attendance_absent_list_student = []
+    student_name_list = []
+    students = Students.objects.all()
+    for student in students:
+        attendance = AttendanceReport.objects.filter(student_id=student.id,status=True).count()
+        absent = AttendanceReport.objects.filter(student_id=student.id,status=False).count()
+        # absent = Attendance.objects.filter(subject_id__in=subject_ids).count()
+        leaves = LeaveReportStudent.objects.filter(student_id = student.id,leave_status = 1).count()
+        attendance_present_list_student.append(attendance)
+        attendance_absent_list_student.append(leaves+absent)
+        student_name_list.append(student.admin.username)
+
+    return render(request, "hod_template/home_content.html",{"student_count":student_count,"staff_count":staff_count,"subject_count":subject_count,"course_count":course_count,"course_name_list":course_name_list,
+                                                             "subject_count_list":subject_count_list,"student_count_list_in_course":student_count_list_in_course,"subject_list":subject_list,"student_count_list_in_subject":student_count_list_in_subject,
+                                                             "attendance_present_list_staff":attendance_present_list_staff,"attendance_absent_list_staff":attendance_absent_list_staff,"staff_name_list":staff_name_list,
+                                                             "attendance_present_list_student":attendance_present_list_student,"attendance_absent_list_student":attendance_absent_list_student,"student_name_list":student_name_list})
 
 def add_staff(request):
     return render(request, "hod_template/add_staff_template.html")
@@ -302,5 +355,148 @@ def add_session_save(request):
             messages.error(request, "Failed To Add Session")
             return HttpResponseRedirect(reverse("manage_session"))
 
+@csrf_exempt
+def check_email_exist(request):
+    email = request.POST.get("email")
+    user_obj = CustomUser.objects.filter(email = email).exists()
+    if user_obj:
+        return HttpResponse(True)
+    else:
+        return HttpResponse(False)
 
+@csrf_exempt
+def check_username_exist(request):
+    username = request.POST.get("username")
+    user_obj = CustomUser.objects.filter(username = username).exists()
+    if user_obj:
+        return HttpResponse(True)
+    else:
+        return HttpResponse(False)
+
+def staff_feedback_message(request):
+    feedbacks = FeedBackStaff.objects.all()
+    return render(request,'hod_template/staff_feedback_template.html',{'feedbacks':feedbacks})
+
+@csrf_exempt
+def staff_feedback_message_replied(request):
+    feedback_id = request.POST.get("id")
+    feedback_message = request.POST.get("message")
+
+    # try:
+    feedback = FeedBackStaff.objects.get(id=feedback_id)
+    feedback.feedback_reply = feedback_message
+    feedback.save()
+    return HttpResponse("True")
+    # except:
+    #     return HttpResponse("False")
+
+def student_feedback_message(request):
+    feedbacks = FeedBackStudent.objects.all()
+    return render(request,'hod_template/student_feedback_template.html',{"feedbacks":feedbacks})
+
+@csrf_exempt
+def student_feedback_message_replied(request):
+    feedback_id = request.POST.get("id")
+    feedback_message = request.POST.get("message")
+
+    try:
+        feedback = FeedBackStudent.objects.get(id=feedback_id)
+        feedback.feedback_reply = feedback_message
+        feedback.save()
+        return HttpResponse("True")
+    except:
+        return HttpResponse("False")
+
+def student_leave_view(request):
+    leaves = LeaveReportStudent.objects.all()
+    return render(request,"hod_template/student_leave_view.html",{'leaves':leaves})
+
+def student_approve_leave(request,leave_id):
+    leave = LeaveReportStudent.objects.get(id=leave_id)
+    leave.leave_status = 1
+    leave.save()
+    return HttpResponseRedirect(reverse("student_leave_view"))
+
+def student_disapprove_leave(request,leave_id):
+    leave = LeaveReportStudent.objects.get(id=leave_id)
+    leave.leave_status = 2
+    leave.save()
+    return HttpResponseRedirect(reverse("student_leave_view"))
+
+def staff_leave_view(request):
+    leaves = LeaveReportStaff.objects.all()
+    return render(request, "hod_template/staff_leave_view.html", {'leaves': leaves})
+
+
+def staff_approve_leave(request, leave_id):
+    leave = LeaveReportStaff.objects.get(id=leave_id)
+    leave.leave_status = 1
+    leave.save()
+    return HttpResponseRedirect(reverse("staff_leave_view"))
+
+
+def staff_disapprove_leave(request, leave_id):
+    leave = LeaveReportStaff.objects.get(id=leave_id)
+    leave.leave_status = 2
+    leave.save()
+    return HttpResponseRedirect(reverse("staff_leave_view"))
+
+def admin_view_attendance(request):
+    subjects = Subject.objects.all()
+    session_year_id = SessionYearModel.object.all()
+    return render(request,"hod_template/admin_view_attendance.html",{"subjects": subjects, "session_year_id": session_year_id})
+
+@csrf_exempt
+def admin_get_attendance_dates(request):
+    subject = request.POST.get("subject")
+    session_year_id = request.POST.get("session_year_id")
+    subject_obj = Subject.objects.get(id=subject)
+    session_year_obj = SessionYearModel.object.get(id=session_year_id)
+    attendance = Attendance.objects.filter(subject_id=subject_obj, session_year_id=session_year_obj)
+    attendance_obj = []
+    for attendance_single in attendance:
+        data = {'id': attendance_single.id, "attendance_date": str(attendance_single.attendance_date),
+                "session_year_id": attendance_single.session_year_id.id}
+        attendance_obj.append(data)
+
+    return JsonResponse(json.dumps(attendance_obj), safe=False)
+
+@csrf_exempt
+def admin_get_attendance_student(request):
+    attendance_date = request.POST.get("attendance_date")
+    attendance = Attendance.objects.get(id=attendance_date)
+
+    attendance_data = AttendanceReport.objects.filter(attendance_id=attendance)
+    list_data = []
+    for student in attendance_data:
+        data_small = {"id": student.student_id.admin.id,
+                      "name": student.student_id.admin.first_name + " " + student.student_id.admin.last_name,
+                      "status": student.status}
+        list_data.append(data_small)
+    return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
+
+def admin_profile(request):
+    user = CustomUser.objects.get(id=request.user.id)
+    return render(request,'hod_template/admin_profile.html',{'user':user})
+
+@csrf_exempt
+def admin_profile_save(request):
+    if request.method != "POST":
+        return HttpResponseRedirect(reverse('admin_profile'))
+    else:
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        password = request.POST.get("password")
+        try:
+            customuser = CustomUser.objects.get(id = request.user.id)
+            customuser.first_name = first_name
+            customuser.last_name = last_name
+            if password != None and password != "":
+                customuser.set_password(password)
+            customuser.save()
+            messages.success(request, "Successfully Updated Profile")
+            return HttpResponseRedirect(reverse('admin_profile'))
+        except:
+            messages.error(request, "Failed To Update Profile")
+            return HttpResponseRedirect(reverse('admin_profile'))
 
