@@ -1,4 +1,4 @@
-from django.contrib.sites import requests
+import requests
 from django.shortcuts import render, HttpResponse
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
