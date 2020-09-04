@@ -26,7 +26,7 @@ SECRET_KEY = '^w69!%@!=4c_b2@9@j9uxi3ht(o0ewqv4v6wm6k+j#9cfx1ogo'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["studentmanagementsystem24.herokuapp.com"]
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -148,7 +148,7 @@ AUTHENTICATION_BACKENDS = ['student_management_app.EmailBackEnd.EmailBackEnd']
 # EMAIL_USE_TLS = True
 # DEFAULT_FROM_EMAIL = "Student management System <satishkurakula073@gmail.com>"
 
-# Enable Only Making Project Live on Heroku
+# Enable only before Deployment
 STATICFILES_STORAGE='whitenoise.storage.CompressedManifestStaticFilesStorage'
 import dj_database_url
 prod_db = dj_database_url.config(conn_max_age=500)
