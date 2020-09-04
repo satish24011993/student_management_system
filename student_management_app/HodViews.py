@@ -531,6 +531,7 @@ def send_student_notification(request):
     print(data.text)
     return HttpResponse("True")
 
+@csrf_exempt
 def send_staff_notification(request):
     id = request.POST.get("id");
     message = request.POST.get("message");
