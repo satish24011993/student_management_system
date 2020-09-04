@@ -513,8 +513,8 @@ def admin_send_notification_staff(request):
 
 @csrf_exempt
 def send_student_notification(request):
-    id = request.POST.get("id");
-    message = request.POST.get("message");
+    id = request.POST.get("id")
+    message = request.POST.get("message")
     student = Students.objects.get(admin=id)
     token = student.fcm_token
     url = "https://fcm.googleapis.com/fcm/send"
