@@ -146,4 +146,4 @@ def student_fcmtoken_save(request):
 def student_all_notification(request):
     student = Students.objects.get(admin=request.user.id)
     notifications = NotificationStudent.objects.filter(student_id=student.id)
-    return render(request,"student_template/all_notification.html",{"notifications":notifications})
+    return render(request,"student_template/staff_all_notification.html",{"notifications":notifications})
