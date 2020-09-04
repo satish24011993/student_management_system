@@ -4,7 +4,8 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 
 from student_management_app.models import CustomUser, Staff, Courses, Students, Subject, SessionYearModel, \
-    FeedBackStudent, FeedBackStaff, LeaveReportStudent, LeaveReportStaff, Attendance, AttendanceReport
+    FeedBackStudent, FeedBackStaff, LeaveReportStudent, LeaveReportStaff, Attendance, AttendanceReport, \
+    NotificationStudent, NotificationStaff
 from django.contrib import messages
 from django.utils.timezone import datetime
 from django.shortcuts import get_object_or_404
@@ -500,3 +501,52 @@ def admin_profile_save(request):
             messages.error(request, "Failed To Update Procfile")
             return HttpResponseRedirect(reverse('admin_profile'))
 
+
+def admin_send_notification_student(request):
+    students = Students.objects.all()
+    return render(request,"hod_template/student_notification.html",{"students":students})
+
+def admin_send_notification_staff(request):
+    staffs = Staff.objects.all()
+    return render(request,"hod_template/staff_notification.html", {"staffs": staffs})
+
+@csrf_exempt
+def send_student_notification(request):
+    id = request.POST.get("id");
+    message = request.POST.get("message");
+    student = Students.objects.get(admin=id)
+    token = student.fcm_token
+    url = "https://fcm.googleapis.com/fcm/send"
+    body = {
+        "notification":{
+            "title" : "Student Management System",
+            "body" : message,
+        },
+        "to":token
+    }
+    headers={"Content-Type":"application/json","Authorization":"key=AAAAyJjPPkk:APA91bEhqTkVSSlKmxETU4_6tGUe4a_czCFE5xZ8t1D3p_SaoZ8KQGSCZhiXVinmv6x01biCG41J4XrDj7Zt_3XqdkLpLyS_ZLvq_Y-s8M-BQIzGLG174EfFR-OVPFfOVLHML5jF5nbY"}
+    data = request.post(url,data=json.dumps(body),headers=headers)
+    notification = NotificationStudent(student_id = student, message=message)
+    notification.save()
+    print(data.text)
+    return HttpResponse("True")
+
+def send_staff_notification(request):
+    id = request.POST.get("id");
+    message = request.POST.get("message");
+    staff = Staff.objects.get(admin=id)
+    token = staff.fcm_token
+    url = "https://fcm.googleapis.com/fcm/send"
+    body = {
+        "notification":{
+            "title" : "Student Management System",
+            "body" : message,
+        },
+        "to":token
+    }
+    headers={"Content-Type":"application/json","Authorization":"key=AAAAyJjPPkk:APA91bEhqTkVSSlKmxETU4_6tGUe4a_czCFE5xZ8t1D3p_SaoZ8KQGSCZhiXVinmv6x01biCG41J4XrDj7Zt_3XqdkLpLyS_ZLvq_Y-s8M-BQIzGLG174EfFR-OVPFfOVLHML5jF5nbY"}
+    data = request.post(url,data=json.dumps(body),headers=headers)
+    notification = NotificationStaff(staff_id = staff, message=message)
+    notification.save()
+    print(data.text)
+    return HttpResponse("True")

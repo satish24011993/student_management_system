@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import Subject, SessionYearModel, Students, Attendance, AttendanceReport, LeaveReportStaff, Staff, \
-    FeedBackStaff, CustomUser, Courses
+    FeedBackStaff, CustomUser, Courses, NotificationStaff
 
 
 def staff_home(request):
@@ -213,9 +213,27 @@ def staff_profile_save(request):
             if password != None and password != "":
                 customuser.set_password(password)
             customuser.save()
-            messages.success(request, "Successfully Updated Procfile")
+            messages.success(request, "Successfully Updated Profile")
             return HttpResponseRedirect(reverse('staff_profile'))
         except:
-            messages.error(request, "Failed To Update Procfile")
+            messages.error(request, "Failed To Update Profile")
             return HttpResponseRedirect(reverse('staff_profile'))
+
+@csrf_exempt
+def staff_fcmtoken_save(request):
+    token = request.POST.get("token")
+    try:
+        staff = Staff.objects.get(admin = request.user.id)
+        staff.fcm_token = token
+        staff.save()
+        # messages.success(request, "Sucessfully Saved Token")
+        return HttpResponse("True")
+    except:
+        # messages.error(request, "Failed To Save Token")
+        return HttpResponse("False")
+
+def staff_all_notification(request):
+    staff = Staff.objects.get(admin=request.user.id)
+    notifications = NotificationStaff.objects.filter(staff_id=staff)
+    return render(request,"staff_template/all_notification.html",{"notifications":notifications})
 

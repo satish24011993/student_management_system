@@ -43,3 +43,33 @@ def GetUserDetails(request):
 def logout_user(request):
     logout(request)
     return HttpResponseRedirect("/")
+
+def showFirebaseJS(request):
+    data = ['importScripts("https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js");' \
+           'importScripts("https://www.gstatic.com/firebasejs/7.19.1/firebase-messaging.js");' \
+
+           'var firebaseConfig = {' \
+           '             apiKey: "AIzaSyD2s0wpsQkvNVCAsPohTSRQPU4oH8DgTho",' \
+           '         authDomain: "studentmanagementsystem-d8ec6.firebaseapp.com",' \
+           '         databaseURL: "https://studentmanagementsystem-d8ec6.firebaseio.com",' \
+           '         projectId: "studentmanagementsystem-d8ec6",' \
+           '         storageBucket: "studentmanagementsystem-d8ec6.appspot.com",' \
+           '         messagingSenderId: "861557177929",' \
+           '         appId: "1:861557177929:web:d568ea1be0c3fc79dc8998",' \
+           '         measurementId: "G-8812Z7EQH7"' \
+           '     };' \
+
+           'firebase.initializeApp(firebaseConfig);' \
+           'const messaging-firebase.messaging();' \
+
+           'messaging.setBackgroundMessagingHandler(function (payload) {' \
+           '    console.log(payload)' \
+           '    const notification=JSON.parse(payload);' \
+           '    const notificationOption={' \
+           '        body:notification.body,' \
+           '        icon:notification.icon,' \
+           '    }' \
+           '    return self.registration.showNotification(payload.notification.title,notificationOption);'  \
+           '});']
+
+    return HttpResponse(data,content_type="text/javascript")

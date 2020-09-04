@@ -209,4 +209,78 @@ Home
           })
     })
 </script>
+<script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-messaging.js"></script>
+<script>
+    var firebaseConfig = {
+        apiKey: "AIzaSyD2s0wpsQkvNVCAsPohTSRQPU4oH8DgTho",
+        authDomain: "studentmanagementsystem-d8ec6.firebaseapp.com",
+        databaseURL: "https://studentmanagementsystem-d8ec6.firebaseio.com",
+        projectId: "studentmanagementsystem-d8ec6",
+        storageBucket: "studentmanagementsystem-d8ec6.appspot.com",
+        messagingSenderId: "861557177929",
+        appId: "1:861557177929:web:d568ea1be0c3fc79dc8998",
+        measurementId: "G-8812Z7EQH7"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const messaging=firebase.messaging();
+
+    fuction InitializeFireBaseMessaging() {
+        messaging
+        .requestPermission()
+        .then(function () {
+            console.log("Notification Permission")
+            return messaging.getToken();
+        })
+        .then(function (token) {
+            console.log("Token :"+token);
+            sendToServer(token);
+        })
+        .catch(function (reason) {
+            console.log(reason);
+        })
+    }
+    messaging.onMessage(function (payload) {
+        console.log(payload);
+        const notificationOption--{
+            body:payload.notification.body,
+            icon:payload.notification.icon
+        }
+        if(Notification.permission==="granted"){
+            var notification-new Notification(payload.notification.title,notificationOption);
+            notification.onclick-function (ev) {
+                ev.preventDefault();
+                window.open(payload.notification.click_action,'_blank'):
+                notification.close();
+            }
+        }
+    });
+    messaging.onTokenRefresh(function () {
+        messaging.getToken()
+        .then(function (newtoken) {
+            console.log("New Token :" newtoken);
+            sendToServer(newtoken);
+        })
+        .catch(function (reason) {
+            console.log(reason);
+        })
+    });
+
+    function sendToServer(token){
+                    $.ajax({
+                            url:'{% url 'student_fcmtoken_save' %}',
+                            type:'POST',
+                            data:{token:token},
+                         })
+                    .done(function(response){
+                        if(response == "True"){
+                            console.log("Token Save")
+                        }
+                        else{
+                            console.log("Error in Token Save")
+                        }
+                     });
+    }
+    InitializeFireBaseMessaging();
+</script>
 {% endblock custom_js %}
