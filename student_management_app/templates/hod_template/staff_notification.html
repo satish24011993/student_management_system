@@ -99,7 +99,7 @@ Staffs Notification
 
   $(".send_notification_btn").click(function(){
       var id=$("#staff_id").val();
-      var message=$("message_not").val();
+      var message=$("#message_not").val();
       sendNotification(id,message);
   });
   function sendNotification(id,message){
