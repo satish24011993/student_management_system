@@ -98,7 +98,7 @@ Students Notification
 
   $(".send_notification_btn").click(function(){
       var id=$("#student_id").val();
-      var message=$("message_not").val();
+      var message=$("#message_not").val();
       sendNotification(id,message);
   });
   function sendNotification(id,message){
