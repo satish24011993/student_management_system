@@ -105,7 +105,7 @@ Students Notification
         $.ajax({
               url:'{% url 'send_student_notification' %}',
               type:'POST',
-              data:{'id':id,'message':message},
+              data:{id:id,message:message},
            })
         .done(function(response){
             if(response == "True"){
