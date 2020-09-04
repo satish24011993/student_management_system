@@ -94,7 +94,6 @@ Students Notification
      console.log(student_id);
      $("#student_id").val(student_id);
      $("#name_span").text(student_name);
-     sendNotification();
   });
 
   $(".send_notification_btn").click(function(){
@@ -108,14 +107,14 @@ Students Notification
               type:'POST',
               data:{'id':id,'message':message},
            })
-      .done(function(response){
-          if(response == "True"){
-              alert("Message Sent");
-          }
-          else{
-              alert("Failed To Send Message");
-          }
-       });
+        .done(function(response){
+            if(response == "True"){
+                alert("Message Sent");
+            }
+            else{
+                alert("Failed To Send Message");
+            }
+         });
   }
 </script>
 {% endblock custom_js %}
