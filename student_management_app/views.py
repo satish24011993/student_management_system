@@ -25,7 +25,7 @@ def doLogin(request):
     else:
         captcha_token=request.POST.get("g-recaptcha-response")
         cap_url = "https://www.google.com/recaptcha/api/siteverify"
-        cap_secret = "6LcOT8gZAAAAAHQ1TrF2g-gGaU7M89A_2fy8oAck"
+        cap_secret = "*********************************"
         cap_data={"secret":cap_secret,"response":captcha_token}
         cap_server_response = requests.post(url=cap_url,data=cap_data)
         cap_json = json.loads(cap_server_response.text)
@@ -58,6 +58,9 @@ def logout_user(request):
 
 def showFirebaseJS(request):
     data = ['importScripts("https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js");' \
+
+
+
            'importScripts("https://www.gstatic.com/firebasejs/7.19.1/firebase-messaging.js");' \
 
            'var firebaseConfig = {' \
