@@ -22,3 +22,4 @@ pip install -r requirements.txt
 runserver:
 python manage.py runserver
 
+https://studentmanagementsystem24.herokuapp.com/
